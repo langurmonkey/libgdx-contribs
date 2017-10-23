@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE ivy-module [
-    <!ENTITY gdx.version "1.9.2">
+    <!ENTITY gdx.version "1.9.7">
 ]>
 <ivy-module version="2.0">
   <info organisation="com.bitfire.postprocessing" module="libgdx-postprocessing"/>
