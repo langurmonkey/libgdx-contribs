@@ -1,8 +1,6 @@
 
 package com.bitfire.postprocessing.effects;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.bitfire.postprocessing.PostProcessorEffect;
@@ -53,15 +51,16 @@ public class MotionBlur extends PostProcessorEffect {
 
     @Override
     public void render(FrameBuffer src, FrameBuffer dest) {
+        if (fbo == null) {
+            // Init frame buffer
+            fbo = FrameBuffer.createFrameBuffer(Format.RGBA8888, src.getWidth(), src.getHeight(), false);
+        }
+
         restoreViewport(dest);
         if (dest != null) {
             motionFilter.setInput(src).setOutput(dest).render();
-            fbo = dest;
         } else {
-            if (fbo == null) {
-                // Init frame buffer
-                fbo = FrameBuffer.createFrameBuffer(Format.RGBA8888, src.getWidth(), src.getHeight(), false);
-            }
+
             motionFilter.setInput(src).setOutput(fbo).render();
 
             // Copy fbo to screen
@@ -76,11 +75,10 @@ public class MotionBlur extends PostProcessorEffect {
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        // Clean texture if disabled
+        // Dispose fbo
         if (!enabled && fbo != null) {
-            fbo.begin();
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
-            fbo.end();
+            fbo.dispose();
+            fbo = null;
         }
     }
 
