@@ -54,7 +54,7 @@ public final class CrtMonitor extends PostProcessorEffect {
             // blur.setType( BlurType.Gaussian3x3b ); // high defocus
             blur.setType(BlurType.Gaussian3x3); // modern machines defocus
         } else {
-            buffer = FrameBuffer.createFrameBuffer(PostProcessor.getFramebufferFormat(), fboWidth, fboHeight, false);
+            buffer = new FrameBuffer(PostProcessor.getFramebufferFormat(), fboWidth, fboHeight, false);
         }
 
         combine = new Combine();

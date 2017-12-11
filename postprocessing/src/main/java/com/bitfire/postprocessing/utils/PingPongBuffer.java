@@ -57,8 +57,8 @@ public final class PingPongBuffer {
     /** Creates a new ping-pong buffer and owns the resources. */
     public PingPongBuffer(int width, int height, Format frameBufferFormat, boolean hasDepth) {
         ownResources = true;
-        owned1 = FrameBuffer.createFrameBuffer(frameBufferFormat, width, height, hasDepth);
-        owned2 = FrameBuffer.createFrameBuffer(frameBufferFormat, width, height, hasDepth);
+        owned1 = new FrameBuffer(frameBufferFormat, width, height, hasDepth);
+        owned2 = new FrameBuffer(frameBufferFormat, width, height, hasDepth);
         set(owned1, owned2);
     }
 
