@@ -5,6 +5,10 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/libgdx-contribs-utils"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=libgdx-contribs-postprocessing&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
+<<<<<<< HEAD
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
+=======
+	<classpathentry kind="lib" path="lib/gdx-1.9.8.jar"/>
+>>>>>>> aa62669eed38c8abe61c58559093b2f2fe0729c1
 	<classpathentry kind="output" path="bin"/>
 </classpath>

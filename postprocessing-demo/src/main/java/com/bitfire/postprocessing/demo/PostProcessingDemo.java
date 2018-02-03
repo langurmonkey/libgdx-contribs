@@ -20,8 +20,6 @@ import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
-import org.lwjgl.opengl.Display;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -88,8 +86,6 @@ public class PostProcessingDemo implements ApplicationListener, InputProcessor {
 				DisplayMode pmode = primary.getDisplayMode();
 				DisplayMode tmode = target.getDisplayMode();
 
-				Display.setLocation( pmode.getWidth() + (tmode.getWidth() - config.width) / 2,
-						(tmode.getHeight() - config.height) / 2 );
 			}
 		}
 	}
