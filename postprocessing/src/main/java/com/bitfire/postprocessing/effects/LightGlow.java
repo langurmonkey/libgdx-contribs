@@ -30,213 +30,221 @@ import com.bitfire.postprocessing.utils.PingPongBuffer;
 /** Light scattering implementation.
  * @author Toni Sagrista */
 public final class LightGlow extends PostProcessorEffect {
-	public static class Settings {
-		public final String name;
+    public static class Settings {
+        public final String name;
 
-		public final float bias;
+        public final float bias;
 
-		public final float glowIntensity;
-		public final float glowSaturation;
-		public final float baseIntensity;
-		public final float baseSaturation;
+        public final float glowIntensity;
+        public final float glowSaturation;
+        public final float baseIntensity;
+        public final float baseSaturation;
 
-		public Settings (String name, float bias, float baseIntensity, float baseSaturation, float glowIntensity,
-			float glowSaturation) {
-			this.name = name;
+        public Settings(String name, float bias, float baseIntensity, float baseSaturation, float glowIntensity,
+                float glowSaturation) {
+            this.name = name;
 
-			this.bias = bias;
-			this.baseIntensity = baseIntensity;
-			this.baseSaturation = baseSaturation;
-			this.glowIntensity = glowIntensity;
-			this.glowSaturation = glowSaturation;
+            this.bias = bias;
+            this.baseIntensity = baseIntensity;
+            this.baseSaturation = baseSaturation;
+            this.glowIntensity = glowIntensity;
+            this.glowSaturation = glowSaturation;
 
-		}
+        }
 
-		public Settings (Settings other) {
-			this.name = other.name;
+        public Settings(Settings other) {
+            this.name = other.name;
 
-			this.bias = other.bias;
-			this.baseIntensity = other.baseIntensity;
-			this.baseSaturation = other.baseSaturation;
-			this.glowIntensity = other.glowIntensity;
-			this.glowSaturation = other.glowSaturation;
+            this.bias = other.bias;
+            this.baseIntensity = other.baseIntensity;
+            this.baseSaturation = other.baseSaturation;
+            this.glowIntensity = other.glowIntensity;
+            this.glowSaturation = other.glowSaturation;
 
-		}
-	}
+        }
+    }
 
-	private PingPongBuffer pingPongBuffer;
+    private PingPongBuffer pingPongBuffer;
 
-	private Glow glow;
-	private Bias bias;
-	private Combine combine;
+    private Glow glow;
+    private Bias bias;
+    private Combine combine;
 
-	private Settings settings;
+    private Settings settings;
 
-	private boolean blending = false;
-	private int sfactor, dfactor;
+    private boolean blending = false;
+    private int sfactor, dfactor;
 
-	public LightGlow (int fboWidth, int fboHeight) {
-		pingPongBuffer = PostProcessor.newPingPongBuffer(fboWidth, fboHeight, PostProcessor.getFramebufferFormat(), false);
+    public LightGlow(int fboWidth, int fboHeight) {
+        pingPongBuffer = PostProcessor.newPingPongBuffer(fboWidth, fboHeight, PostProcessor.getFramebufferFormat(), false);
 
-		glow = new Glow(fboWidth, fboHeight);
-		bias = new Bias();
-		combine = new Combine();
+        glow = new Glow(fboWidth, fboHeight);
+        bias = new Bias();
+        combine = new Combine();
 
-		setSettings(new Settings("default", -0.9f, 1f, 1f, 0.7f, 1f));
-	}
+        setSettings(new Settings("default", -0.9f, 1f, 1f, 0.7f, 1f));
+    }
 
-	@Override
-	public void dispose () {
-		combine.dispose();
-		bias.dispose();
-		pingPongBuffer.dispose();
-	}
+    @Override
+    public void dispose() {
+        combine.dispose();
+        bias.dispose();
+        pingPongBuffer.dispose();
+    }
 
-	/** Sets the positions of the 10 lights in [0..1] in both coordinates **/
-	public void setLightPositions (int nLights, float[] vec) {
-		glow.setLightPositions(nLights, vec);
-	}
+    /** Sets the positions of the 10 lights in [0..1] in both coordinates **/
+    public void setLightPositions(int nLights, float[] vec) {
+        glow.setLightPositions(nLights, vec);
+    }
 
-	public void setLightViewAngles (float[] vec) {
-		glow.setLightViewAngles(vec);
-	}
+    public void setLightViewAngles(float[] vec) {
+        glow.setLightViewAngles(vec);
+    }
 
-	public void setLightColors (float[] vec) {
-		glow.setLightColors(vec);
-	}
+    public void setLightColors(float[] vec) {
+        glow.setLightColors(vec);
+    }
 
-	public void setNSamples (int nSamples) {
-		glow.setNSamples(nSamples);
-	}
+    public void setNSamples(int nSamples) {
+        glow.setNSamples(nSamples);
+    }
 
-	public void setTextureScale (float scl) {
-		glow.setTextureScale(scl);
-	}
+    public void setTextureScale(float scl) {
+        glow.setTextureScale(scl);
+    }
 
-	public void setBaseIntesity (float intensity) {
-		combine.setSource1Intensity(intensity);
-	}
+    public void setBaseIntesity(float intensity) {
+        combine.setSource1Intensity(intensity);
+    }
 
-	public void setBaseSaturation (float saturation) {
-		combine.setSource1Saturation(saturation);
-	}
+    public void setBaseSaturation(float saturation) {
+        combine.setSource1Saturation(saturation);
+    }
 
-	public void setScatteringIntesity (float intensity) {
-		combine.setSource2Intensity(intensity);
-	}
+    public void setScatteringIntesity(float intensity) {
+        combine.setSource2Intensity(intensity);
+    }
 
-	public void setScatteringSaturation (float saturation) {
-		combine.setSource2Saturation(saturation);
-	}
+    public void setScatteringSaturation(float saturation) {
+        combine.setSource2Saturation(saturation);
+    }
 
-	public void setBias (float b) {
-		bias.setBias(b);
-	}
+    public void setBias(float b) {
+        bias.setBias(b);
+    }
 
-	public void enableBlending (int sfactor, int dfactor) {
-		this.blending = true;
-		this.sfactor = sfactor;
-		this.dfactor = dfactor;
-	}
+    public void enableBlending(int sfactor, int dfactor) {
+        this.blending = true;
+        this.sfactor = sfactor;
+        this.dfactor = dfactor;
+    }
 
-	public void disableBlending () {
-		this.blending = false;
-	}
+    public void disableBlending() {
+        this.blending = false;
+    }
 
-	public void setSettings (Settings settings) {
-		this.settings = settings;
+    public void setSettings(Settings settings) {
+        this.settings = settings;
 
-		// setup threshold filter
-		setBias(settings.bias);
+        // setup threshold filter
+        setBias(settings.bias);
 
-		// setup combine filter
-		setBaseIntesity(settings.baseIntensity);
-		setBaseSaturation(settings.baseSaturation);
-		setScatteringIntesity(settings.glowIntensity);
-		setScatteringSaturation(settings.glowSaturation);
+        // setup combine filter
+        setBaseIntesity(settings.baseIntensity);
+        setBaseSaturation(settings.baseSaturation);
+        setScatteringIntesity(settings.glowIntensity);
+        setScatteringSaturation(settings.glowSaturation);
 
-	}
+    }
 
-	public void setLightGlowTexture (Texture tex) {
-		glow.setLightGlowTexture(tex);
-	}
+    public void setLightGlowTexture(Texture tex) {
+        glow.setLightGlowTexture(tex);
+    }
 
-	public Texture getLightGlowTexture () {
-		return glow.getLightGlowTexture();
-	}
+    public Texture getLightGlowTexture() {
+        return glow.getLightGlowTexture();
+    }
 
-	public float getBias () {
-		return bias.getBias();
-	}
+    public void setPrePassTexture(Texture tex) {
+        glow.setPrePassTexture(tex);
+    }
 
-	public float getBaseIntensity () {
-		return combine.getSource1Intensity();
-	}
+    public Texture getPrePassTexture() {
+        return glow.getPrePassTexture();
+    }
 
-	public float getBaseSaturation () {
-		return combine.getSource1Saturation();
-	}
+    public float getBias() {
+        return bias.getBias();
+    }
 
-	public float getScatteringIntensity () {
-		return combine.getSource2Intensity();
-	}
+    public float getBaseIntensity() {
+        return combine.getSource1Intensity();
+    }
 
-	public float getScatteringSaturation () {
-		return combine.getSource2Saturation();
-	}
+    public float getBaseSaturation() {
+        return combine.getSource1Saturation();
+    }
 
-	public boolean isBlendingEnabled () {
-		return blending;
-	}
+    public float getScatteringIntensity() {
+        return combine.getSource2Intensity();
+    }
 
-	public int getBlendingSourceFactor () {
-		return sfactor;
-	}
+    public float getScatteringSaturation() {
+        return combine.getSource2Saturation();
+    }
 
-	public int getBlendingDestFactor () {
-		return dfactor;
-	}
+    public boolean isBlendingEnabled() {
+        return blending;
+    }
 
-	public Settings getSettings () {
-		return settings;
-	}
+    public int getBlendingSourceFactor() {
+        return sfactor;
+    }
 
-	@Override
-	public void render (final FrameBuffer src, final FrameBuffer dest) {
-		Texture texsrc = src.getColorBufferTexture();
+    public int getBlendingDestFactor() {
+        return dfactor;
+    }
 
-		boolean blendingWasEnabled = PostProcessor.isStateEnabled(GL20.GL_BLEND);
-		Gdx.gl.glDisable(GL20.GL_BLEND);
+    public Settings getSettings() {
+        return settings;
+    }
 
-		pingPongBuffer.begin();
-		{
-			// apply bias
-			bias.setInput(texsrc).setOutput(pingPongBuffer.getSourceBuffer()).render();
+    @Override
+    public void render(final FrameBuffer src, final FrameBuffer dest) {
+        Texture texsrc = src.getColorBufferTexture();
 
-			glow.setInput(pingPongBuffer.getSourceBuffer()).setOutput(pingPongBuffer.getResultBuffer()).render();
+        boolean blendingWasEnabled = PostProcessor.isStateEnabled(GL20.GL_BLEND);
+        Gdx.gl.glDisable(GL20.GL_BLEND);
 
-		}
-		pingPongBuffer.end();
+        pingPongBuffer.begin();
+        {
+            // apply bias
+            bias.setInput(texsrc).setOutput(pingPongBuffer.getSourceBuffer()).render();
 
-		if (blending || blendingWasEnabled) {
-			Gdx.gl.glEnable(GL20.GL_BLEND);
-		}
+            glow.setInput(pingPongBuffer.getSourceBuffer()).setOutput(pingPongBuffer.getResultBuffer()).render();
 
-		if (blending) {
-			Gdx.gl.glBlendFunc(sfactor, dfactor);
-		}
+        }
+        pingPongBuffer.end();
 
-		restoreViewport(dest);
+        if (blending || blendingWasEnabled) {
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+        }
 
-		// mix original scene and blurred threshold, modulate via
-		combine.setOutput(dest).setInput(texsrc, pingPongBuffer.getResultTexture()).render();
-	}
+        if (blending) {
+            Gdx.gl.glBlendFunc(sfactor, dfactor);
+        }
 
-	@Override
-	public void rebind () {
-		glow.rebind();
-		bias.rebind();
-		combine.rebind();
-		pingPongBuffer.rebind();
-	}
+        restoreViewport(dest);
+
+        // mix original scene and blurred threshold, modulate via
+        combine.setOutput(dest).setInput(texsrc, pingPongBuffer.getResultTexture()).render();
+    }
+
+    @Override
+    public void rebind() {
+        glow.rebind();
+        bias.rebind();
+        combine.rebind();
+        pingPongBuffer.rebind();
+    }
 }
