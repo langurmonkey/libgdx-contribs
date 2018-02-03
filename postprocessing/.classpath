@@ -4,11 +4,6 @@
 	<classpathentry including="shaders/blur.fragment|shaders/blur.vertex|shaders/camerablur.fragment|shaders/combine.fragment|shaders/convolve-1d.fragment|shaders/copy.fragment|shaders/crt-screen.fragment|shaders/fxaa.fragment|shaders/nfaa.fragment|shaders/radial-blur.fragment|shaders/radial-blur.vertex|shaders/radial-distortion.fragment|shaders/screenspace.vertex|shaders/threshold.fragment|shaders/vignetting.fragment|shaders/zoom.fragment|shaders/zoom.vertex" kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/libgdx-contribs-utils"/>
-	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=libgdx-contribs-postprocessing&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
-<<<<<<< HEAD
-	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
-=======
 	<classpathentry kind="lib" path="lib/gdx-1.9.8.jar"/>
->>>>>>> aa62669eed38c8abe61c58559093b2f2fe0729c1
 	<classpathentry kind="output" path="bin"/>
 </classpath>

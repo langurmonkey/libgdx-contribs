@@ -117,7 +117,7 @@ public final class Glow extends Filter<Glow> {
 
     public void setPrePassTexture(Texture tex) {
         prePassTexture = tex;
-        setParam(Param.PrePassTexture, u_texture1);
+        setParam(Param.PrePassTexture, u_texture2);
     }
 
     public Texture getPrePassTexture() {

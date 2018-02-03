@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE ivy-module [
-    <!ENTITY gdx.version "1.6.4">
+    <!ENTITY gdx.version "1.9.8">
 ]>
 <ivy-module version="2.0">
   <info organisation="com.bitfire.utils" module="libgdx-contribs-utils"/>

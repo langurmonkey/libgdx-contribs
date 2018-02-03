@@ -16,16 +16,10 @@
 
 package com.bitfire.postprocessing.effects;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.bitfire.postprocessing.PostProcessor;
 import com.bitfire.postprocessing.PostProcessorEffect;
-import com.bitfire.postprocessing.filters.Bias;
-import com.bitfire.postprocessing.filters.Combine;
 import com.bitfire.postprocessing.filters.Glow;
-import com.bitfire.postprocessing.utils.PingPongBuffer;
 
 /**
  * Light scattering implementation.
@@ -36,63 +30,30 @@ public final class LightGlow extends PostProcessorEffect {
     public static class Settings {
         public final String name;
 
-        public final float bias;
-
-        public final float glowIntensity;
-        public final float glowSaturation;
-        public final float baseIntensity;
-        public final float baseSaturation;
-
-        public Settings(String name, float bias, float baseIntensity, float baseSaturation, float glowIntensity,
-                float glowSaturation) {
+        public Settings(String name) {
             this.name = name;
-
-            this.bias = bias;
-            this.baseIntensity = baseIntensity;
-            this.baseSaturation = baseSaturation;
-            this.glowIntensity = glowIntensity;
-            this.glowSaturation = glowSaturation;
 
         }
 
         public Settings(Settings other) {
             this.name = other.name;
-
-            this.bias = other.bias;
-            this.baseIntensity = other.baseIntensity;
-            this.baseSaturation = other.baseSaturation;
-            this.glowIntensity = other.glowIntensity;
-            this.glowSaturation = other.glowSaturation;
-
         }
     }
 
-    private PingPongBuffer pingPongBuffer;
-
     private Glow glow;
-    private Bias bias;
-    private Combine combine;
-
     private Settings settings;
 
     private boolean blending = false;
     private int sfactor, dfactor;
 
     public LightGlow(int fboWidth, int fboHeight) {
-        pingPongBuffer = PostProcessor.newPingPongBuffer(fboWidth, fboHeight, PostProcessor.getFramebufferFormat(), false);
-
         glow = new Glow(fboWidth, fboHeight);
-        bias = new Bias();
-        combine = new Combine();
 
-        setSettings(new Settings("default", -0.9f, 1f, 1f, 0.7f, 1f));
     }
 
     @Override
     public void dispose() {
-        combine.dispose();
-        bias.dispose();
-        pingPongBuffer.dispose();
+        glow.dispose();
     }
 
     /** Sets the positions of the 10 lights in [0..1] in both coordinates **/
@@ -116,26 +77,6 @@ public final class LightGlow extends PostProcessorEffect {
         glow.setTextureScale(scl);
     }
 
-    public void setBaseIntesity(float intensity) {
-        combine.setSource1Intensity(intensity);
-    }
-
-    public void setBaseSaturation(float saturation) {
-        combine.setSource1Saturation(saturation);
-    }
-
-    public void setScatteringIntesity(float intensity) {
-        combine.setSource2Intensity(intensity);
-    }
-
-    public void setScatteringSaturation(float saturation) {
-        combine.setSource2Saturation(saturation);
-    }
-
-    public void setBias(float b) {
-        bias.setBias(b);
-    }
-
     public void enableBlending(int sfactor, int dfactor) {
         this.blending = true;
         this.sfactor = sfactor;
@@ -148,15 +89,6 @@ public final class LightGlow extends PostProcessorEffect {
 
     public void setSettings(Settings settings) {
         this.settings = settings;
-
-        // setup threshold filter
-        setBias(settings.bias);
-
-        // setup combine filter
-        setBaseIntesity(settings.baseIntensity);
-        setBaseSaturation(settings.baseSaturation);
-        setScatteringIntesity(settings.glowIntensity);
-        setScatteringSaturation(settings.glowSaturation);
 
     }
 
@@ -174,26 +106,6 @@ public final class LightGlow extends PostProcessorEffect {
 
     public Texture getPrePassTexture() {
         return glow.getPrePassTexture();
-    }
-
-    public float getBias() {
-        return bias.getBias();
-    }
-
-    public float getBaseIntensity() {
-        return combine.getSource1Intensity();
-    }
-
-    public float getBaseSaturation() {
-        return combine.getSource1Saturation();
-    }
-
-    public float getScatteringIntensity() {
-        return combine.getSource2Intensity();
-    }
-
-    public float getScatteringSaturation() {
-        return combine.getSource2Saturation();
     }
 
     public boolean isBlendingEnabled() {
@@ -214,30 +126,8 @@ public final class LightGlow extends PostProcessorEffect {
 
     @Override
     public void render(final FrameBuffer src, final FrameBuffer dest) {
-        Texture texsrc = src.getColorBufferTexture();
-
-        boolean blendingWasEnabled = PostProcessor.isStateEnabled(GL20.GL_BLEND);
-        Gdx.gl.glDisable(GL20.GL_BLEND);
-
-        pingPongBuffer.begin();
-        {
-            // apply bias
-            bias.setInput(texsrc).setOutput(pingPongBuffer.getSourceBuffer()).render();
-
-            glow.setInput(pingPongBuffer.getSourceBuffer()).setOutput(pingPongBuffer.getResultBuffer()).render();
-
-        }
-        pingPongBuffer.end();
-
-        if (blending || blendingWasEnabled) {
-            Gdx.gl.glEnable(GL20.GL_BLEND);
-        }
-
-        if (blending) {
-            Gdx.gl.glBlendFunc(sfactor, dfactor);
-        }
-
         restoreViewport(dest);
+        glow.setInput(src).setOutput(dest).render();
     }
 
     public void setViewportSize(int width, int height) {
@@ -247,8 +137,5 @@ public final class LightGlow extends PostProcessorEffect {
     @Override
     public void rebind() {
         glow.rebind();
-        bias.rebind();
-        combine.rebind();
-        pingPongBuffer.rebind();
     }
 }
