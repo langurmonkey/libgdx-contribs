@@ -1,4 +1,3 @@
-
 #ifdef GL_ES
 	#define PRECISION mediump
 	precision PRECISION float;
@@ -34,7 +33,7 @@ vec4 cubeToProjection(samplerCube cubemap, vec2 tc){
 vec4 cubeToProjection(samplerCube cubemap, vec2 tc){
 	vec3 cubmaptc;
 	float lon = tc.x * TWOPI + PI;
-	float lat = asin(tc.y * 2.0 - 1.0) - PI / 2.0;	
+	float lat = asin((1.0 - tc.y) * 2.0 - 1.0) - PI / 2.0;	
 	
 	cubmaptc.x = -sin(lon) * sin(lat); 
 	cubmaptc.y = cos(lat); 
@@ -50,8 +49,8 @@ vec4 cubeToProjection(samplerCube cubemap, vec2 tc){
 	if(length(tc * 2.0 - 1.0) > 1.0){
 	    return vec4(0.0, 0.0, 0.0, 1.0);
 	}
-	float x = tc.x * 360.0 - 180.0;
-	float y = tc.y * 180.0 - 90.0;
+	float x = (1.0 - tc.x) * 360.0 - 180.0;
+	float y = (1.0 - tc.y) * 180.0 - 90.0;
         x *= 1.273;
         y *= 1.273;
 	

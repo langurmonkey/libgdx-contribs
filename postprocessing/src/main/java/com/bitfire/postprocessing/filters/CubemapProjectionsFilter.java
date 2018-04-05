@@ -20,15 +20,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.bitfire.postprocessing.effects.CubemapProjections.CubemapProjection;
 import com.bitfire.utils.ShaderLoader;
 
 /** Fast approximate anti-aliasing filter.
  * @author Toni Sagrista */
 public final class CubemapProjectionsFilter extends Filter<CubemapProjectionsFilter> {
 
-    public enum Projection {
-        EQUIRECTANGULAR, CYLINDRICAL, HAMMERAITOFF
-    }
 
     private ShaderProgram[] programs;
 
@@ -79,7 +77,7 @@ public final class CubemapProjectionsFilter extends Filter<CubemapProjectionsFil
      * Sets the projection to use
      * @param proj
      */
-    public void setProjection(Projection proj) {
+    public void setProjection(CubemapProjection proj) {
         switch (proj) {
         case EQUIRECTANGULAR:
             super.program = programs[0];

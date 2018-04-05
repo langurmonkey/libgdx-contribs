@@ -11,31 +11,38 @@ import com.bitfire.postprocessing.PostProcessorEffect;
 import com.bitfire.postprocessing.filters.CubemapProjectionsFilter;
 
 public final class CubemapProjections extends PostProcessorEffect {
-	private CubemapProjectionsFilter filter;
+    private CubemapProjectionsFilter filter;
 
-	public CubemapProjections () {
-		filter = new CubemapProjectionsFilter();
-	}
+    public enum CubemapProjection {
+        EQUIRECTANGULAR, CYLINDRICAL, HAMMERAITOFF
+    }
 
-	@Override
-	public void dispose () {
-		filter.dispose();
-	}
+    public CubemapProjections() {
+        filter = new CubemapProjectionsFilter();
+    }
 
-	@Override
-	public void rebind () {
-		filter.rebind();
-	}
+    @Override
+    public void dispose() {
+        filter.dispose();
+    }
 
-	public void setSides (FrameBuffer xpositive, FrameBuffer xnegative, FrameBuffer ypositive, FrameBuffer ynegative,
-		FrameBuffer zpositive, FrameBuffer znegative) {
-		filter.setSides(xpositive, xnegative, ypositive, ynegative, zpositive, znegative);
-	}
+    @Override
+    public void rebind() {
+        filter.rebind();
+    }
 
-	@Override
-	public void render (FrameBuffer src, FrameBuffer dest) {
-		restoreViewport(dest);
-		filter.setInput(src).setOutput(dest).render();
-	};
+    public void setSides(FrameBuffer xpositive, FrameBuffer xnegative, FrameBuffer ypositive, FrameBuffer ynegative, FrameBuffer zpositive, FrameBuffer znegative) {
+        filter.setSides(xpositive, xnegative, ypositive, ynegative, zpositive, znegative);
+    }
+
+    @Override
+    public void render(FrameBuffer src, FrameBuffer dest) {
+        restoreViewport(dest);
+        filter.setInput(src).setOutput(dest).render();
+    };
+
+    public void setProjection(CubemapProjection projection) {
+        filter.setProjection(projection);
+    }
 
 }
