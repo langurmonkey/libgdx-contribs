@@ -18,51 +18,56 @@ varying vec2 v_texCoords;
 #ifdef equirectangular
 // Equirectangular (spherical)
 vec4 cubeToProjection(samplerCube cubemap, vec2 tc){ 
-	vec3 cubmaptc; 
 	float lat = tc.y * PI;
 	float lon = tc.x * TWOPI;
-	cubmaptc.x = -sin(lon) * sin(lat); 
-	cubmaptc.y = cos(lat); 
-	cubmaptc.z = -cos(lon) * sin(lat); 
-	return textureCube(cubemap, cubmaptc); 
+	vec3 cubemaptc; 
+	cubemaptc.x = -sin(lon) * sin(lat); 
+	cubemaptc.y = cos(lat); 
+	cubemaptc.z = -cos(lon) * sin(lat); 
+	return textureCube(cubemap, cubemaptc); 
 }
 #endif //equirectangular
 
 #ifdef cylindrical
 // Cylindrical
 vec4 cubeToProjection(samplerCube cubemap, vec2 tc){
-	vec3 cubmaptc;
 	float lon = tc.x * TWOPI + PI;
 	float lat = asin((1.0 - tc.y) * 2.0 - 1.0) - PI / 2.0;	
 	
-	cubmaptc.x = -sin(lon) * sin(lat); 
-	cubmaptc.y = cos(lat); 
-	cubmaptc.z = -cos(lon) * sin(lat); 
-	return textureCube(cubemap, cubmaptc);
+	vec3 cubemaptc; 
+	cubemaptc.x = -sin(lon) * sin(lat); 
+	cubemaptc.y = cos(lat); 
+	cubemaptc.z = -cos(lon) * sin(lat); 
+	return textureCube(cubemap, cubemaptc);
 }
 #endif //cylindrical
 
 #ifdef hammeraitoff
 // Hammer-Aitoff
 vec4 cubeToProjection(samplerCube cubemap, vec2 tc){
-	vec3 cubmaptc;
-	if(length(tc * 2.0 - 1.0) > 1.0){
-	    return vec4(0.0, 0.0, 0.0, 1.0);
-	}
-	float x = (1.0 - tc.x) * 360.0 - 180.0;
-	float y = (1.0 - tc.y) * 180.0 - 90.0;
-        x *= 1.273;
-        y *= 1.273;
+    float x = (1.0 - tc.x) * 360.0 - 180.0;
+    float y = (1.0 - tc.y) * 180.0 - 90.0;
+    //x *= 1.273;
+    //y *= 1.273;
+    x *= DEG_RAD;
+    y *= DEG_RAD;
+        
 	
-	float z = sqrt(1.0 - pow(DEG_RAD * x / 4.0, 2.0) - pow(DEG_RAD * y / 2.0, 2.0));
+    float zsqr = 1.0 - pow(x / 4.0, 2.0) - pow(y / 2.0, 2.0);
+    if((x * x / 8.0 + y * y / 2.0 - 1.0) > 0.0) {
+        // Deprojection not valid, values must be inside space
+        return vec4(0.0, 0.0, 0.0, 1.0);
+    }
+    float z = sqrt(zsqr);
 	
-	float lon = atan(2.0 * z * z - 1.0, DEG_RAD * z * x / 2.0) - PITWO;
-	float lat = asin(DEG_RAD * z * y) - PITWO;
+    float lon = 2.0 * atan(4.0 * z * z - 2.0, z * x) - PI;
+    float lat = asin(z * y) - PITWO;
 	
-	cubmaptc.x = -sin(lon) * sin(lat); 
-	cubmaptc.y = cos(lat); 
-	cubmaptc.z = -cos(lon) * sin(lat); 
-	return textureCube(cubemap, cubmaptc);
+    vec3 cubemaptc;
+    cubemaptc.x = -sin(lon) * sin(lat); 
+    cubemaptc.y = cos(lat); 
+    cubemaptc.z = -cos(lon) * sin(lat); 
+    return textureCube(cubemap, cubemaptc);
 }
 #endif //hammeraitoff
 
