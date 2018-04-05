@@ -8,13 +8,13 @@ package com.bitfire.postprocessing.effects;
 
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.bitfire.postprocessing.PostProcessorEffect;
-import com.bitfire.postprocessing.filters.CubemapEquirectangularFilter;
+import com.bitfire.postprocessing.filters.CubemapProjectionsFilter;
 
-public final class CubemapEquirectangular extends PostProcessorEffect {
-	private CubemapEquirectangularFilter filter;
+public final class CubemapProjections extends PostProcessorEffect {
+	private CubemapProjectionsFilter filter;
 
-	public CubemapEquirectangular () {
-		filter = new CubemapEquirectangularFilter();
+	public CubemapProjections () {
+		filter = new CubemapProjectionsFilter();
 	}
 
 	@Override

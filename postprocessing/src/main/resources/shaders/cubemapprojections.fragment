@@ -1,0 +1,72 @@
+
+#ifdef GL_ES
+	#define PRECISION mediump
+	precision PRECISION float;
+#else
+	#define PRECISION
+#endif
+
+uniform sampler2D u_texture0;
+uniform samplerCube u_cubemap;
+varying vec2 v_texCoords;
+
+#define PI 3.141592653589793238462643383
+#define TWOPI PI * 2.0
+#define PITWO PI / 2.0
+#define DEG_RAD PI / 180.0
+#define RAD_DEG 180.0 / PI
+
+#ifdef equirectangular
+// Equirectangular (spherical)
+vec4 cubeToProjection(samplerCube cubemap, vec2 tc){ 
+	vec3 cubmaptc; 
+	float lat = tc.y * PI;
+	float lon = tc.x * TWOPI;
+	cubmaptc.x = -sin(lon) * sin(lat); 
+	cubmaptc.y = cos(lat); 
+	cubmaptc.z = -cos(lon) * sin(lat); 
+	return textureCube(cubemap, cubmaptc); 
+}
+#endif //equirectangular
+
+#ifdef cylindrical
+// Cylindrical
+vec4 cubeToProjection(samplerCube cubemap, vec2 tc){
+	vec3 cubmaptc;
+	float lon = tc.x * TWOPI + PI;
+	float lat = asin(tc.y * 2.0 - 1.0) - PI / 2.0;	
+	
+	cubmaptc.x = -sin(lon) * sin(lat); 
+	cubmaptc.y = cos(lat); 
+	cubmaptc.z = -cos(lon) * sin(lat); 
+	return textureCube(cubemap, cubmaptc);
+}
+#endif //cylindrical
+
+#ifdef hammeraitoff
+// Hammer-Aitoff
+vec4 cubeToProjection(samplerCube cubemap, vec2 tc){
+	vec3 cubmaptc;
+	if(length(tc * 2.0 - 1.0) > 1.0){
+	    return vec4(0.0, 0.0, 0.0, 1.0);
+	}
+	float x = tc.x * 360.0 - 180.0;
+	float y = tc.y * 180.0 - 90.0;
+        x *= 1.273;
+        y *= 1.273;
+	
+	float z = sqrt(1.0 - pow(DEG_RAD * x / 4.0, 2.0) - pow(DEG_RAD * y / 2.0, 2.0));
+	
+	float lon = atan(2.0 * z * z - 1.0, DEG_RAD * z * x / 2.0) - PITWO;
+	float lat = asin(DEG_RAD * z * y) - PITWO;
+	
+	cubmaptc.x = -sin(lon) * sin(lat); 
+	cubmaptc.y = cos(lat); 
+	cubmaptc.z = -cos(lon) * sin(lat); 
+	return textureCube(cubemap, cubmaptc);
+}
+#endif //hammeraitoff
+
+void main( void ){
+	gl_FragColor = cubeToProjection(u_cubemap, v_texCoords); 
+}
