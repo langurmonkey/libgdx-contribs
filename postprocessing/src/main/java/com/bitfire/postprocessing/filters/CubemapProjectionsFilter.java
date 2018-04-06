@@ -61,7 +61,7 @@ public final class CubemapProjectionsFilter extends Filter<CubemapProjectionsFil
         super(null);
         ShaderProgram equirectangular = ShaderLoader.fromFile("screenspace", "cubemapprojections", "#define equirectangular");
         ShaderProgram cylindrical = ShaderLoader.fromFile("screenspace", "cubemapprojections", "#define cylindrical");
-        ShaderProgram hammeraitoff = ShaderLoader.fromFile("screenspace", "cubemapprojections", "#define hammeraitoff");
+        ShaderProgram hammeraitoff = ShaderLoader.fromFile("screenspace", "cubemapprojections", "#define hammer");
 
         programs = new ShaderProgram[3];
         programs[0] = equirectangular;
@@ -87,7 +87,7 @@ public final class CubemapProjectionsFilter extends Filter<CubemapProjectionsFil
             super.program = programs[1];
             rebind();
             break;
-        case HAMMERAITOFF:
+        case HAMMER:
             super.program = programs[2];
             rebind();
             break;

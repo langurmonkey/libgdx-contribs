@@ -43,8 +43,8 @@ vec4 cubeToProjection(samplerCube cubemap, vec2 tc){
 }
 #endif //cylindrical
 
-#ifdef hammeraitoff
-// Hammer-Aitoff
+#ifdef hammer
+// Hammer
 vec4 cubeToProjection(samplerCube cubemap, vec2 tc) {
     // The 0.9 factor is a hack to make the projection occupy the full extent of the screen
     #define EXTENT 0.9
@@ -73,7 +73,7 @@ vec4 cubeToProjection(samplerCube cubemap, vec2 tc) {
     cubemaptc.z = -cos(lon) * sin(lat); 
     return textureCube(cubemap, cubemaptc);
 }
-#endif //hammeraitoff
+#endif //hammer
 
 void main( void ){
 	gl_FragColor = cubeToProjection(u_cubemap, v_texCoords); 

@@ -14,7 +14,7 @@ public final class CubemapProjections extends PostProcessorEffect {
     private CubemapProjectionsFilter filter;
 
     public enum CubemapProjection {
-        EQUIRECTANGULAR, CYLINDRICAL, HAMMERAITOFF
+        EQUIRECTANGULAR, CYLINDRICAL, HAMMER
     }
 
     public CubemapProjections() {
