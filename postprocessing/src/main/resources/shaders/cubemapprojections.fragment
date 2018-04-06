@@ -1,3 +1,4 @@
+
 #ifdef GL_ES
 	#define PRECISION mediump
 	precision PRECISION float;
@@ -44,9 +45,12 @@ vec4 cubeToProjection(samplerCube cubemap, vec2 tc){
 
 #ifdef hammeraitoff
 // Hammer-Aitoff
-vec4 cubeToProjection(samplerCube cubemap, vec2 tc){
-    float x = (1.0 - tc.x) * 360.0 - 180.0;
-    float y = (1.0 - tc.y) * 180.0 - 90.0;
+vec4 cubeToProjection(samplerCube cubemap, vec2 tc) {
+    // The 0.9 factor is a hack to make the projection occupy the full extent of the screen
+    #define EXTENT 0.9
+    #define EXTENTRES2 (1.0 - EXTENT) / 2.0
+    float x = (1.0 - tc.x * EXTENT - EXTENTRES2) * 360.0 - 180.0;
+    float y = (1.0 - tc.y * EXTENT - EXTENTRES2) * 180.0 - 90.0;
     //x *= 1.273;
     //y *= 1.273;
     x *= DEG_RAD;
