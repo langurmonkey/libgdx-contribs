@@ -20,44 +20,56 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.bitfire.postprocessing.PostProcessorEffect;
 import com.bitfire.postprocessing.filters.LevelsFilter;
 
-/** Implements brightness and contrast levels
+/** Implements brightness, contrast, hue and saturation levels
  * @author tsagrista */
 public final class Levels extends PostProcessorEffect {
-	private LevelsFilter filter = null;
+    private LevelsFilter filter = null;
 
-	/** Creates the effect */
-	public Levels () {
-		filter = new LevelsFilter();
-	}
+    /** Creates the effect */
+    public Levels() {
+        filter = new LevelsFilter();
+    }
 
-	/** Set the brightness
-	 * @param value The brightness value in [-1..1] */
-	public void setBrightness (float value) {
-		filter.setBrightness(value);
-	}
+    /** Set the brightness
+    	 * @param value The brightness value in [-1..1] */
+    public void setBrightness(float value) {
+        filter.setBrightness(value);
+    }
 
-	/** Set the contrast
-	 * @param value The contrast value in [0..2] */
-	public void setContrast (float value) {
-		filter.setContrast(value);
-	}
+    /** Set the saturation
+    	 * @param value The saturation value in [0..2] */
+    public void setSaturation(float value) {
+        filter.setSaturation(value);
+    }
 
-	@Override
-	public void dispose () {
-		if (filter != null) {
-			filter.dispose();
-			filter = null;
-		}
-	}
+    /** Set the hue
+    	 * @param value The hue value in [0..2] */
+    public void setHue(float value) {
+        filter.setHue(value);
+    }
 
-	@Override
-	public void rebind () {
-		filter.rebind();
-	}
+    /** Set the contrast
+    	 * @param value The contrast value in [0..2] */
+    public void setContrast(float value) {
+        filter.setContrast(value);
+    }
 
-	@Override
-	public void render (FrameBuffer src, FrameBuffer dest) {
-		restoreViewport(dest);
-		filter.setInput(src).setOutput(dest).render();
-	}
+    @Override
+    public void dispose() {
+        if (filter != null) {
+            filter.dispose();
+            filter = null;
+        }
+    }
+
+    @Override
+    public void rebind() {
+        filter.rebind();
+    }
+
+    @Override
+    public void render(FrameBuffer src, FrameBuffer dest) {
+        restoreViewport(dest);
+        filter.setInput(src).setOutput(dest).render();
+    }
 }

@@ -20,63 +20,89 @@ import com.bitfire.utils.ShaderLoader;
 /** Controls levels of brightness and contrast
  * @author tsagrista */
 public final class LevelsFilter extends Filter<LevelsFilter> {
-	private float brightness = 0.0f;
-	private float contrast = 1.0f;
+    private float brightness = 0.0f;
+    private float contrast = 1.0f;
+    private float saturation = 1.0f;
+    private float hue = 1.0f;
 
-	public enum Param implements Parameter {
-		// @formatter:off
-		Texture("u_texture0", 0), Brightness("u_brightness", 0), Contrast("u_contrast", 0);
-		// @formatter:on
+    public enum Param implements Parameter {
+        // @formatter:off
+        Texture("u_texture0", 0), Brightness("u_brightness", 0), Contrast("u_contrast", 0), Saturation("u_saturation", 0), Hue("u_hue", 0);
+        // @formatter:on
 
-		private String mnemonic;
-		private int elementSize;
+        private String mnemonic;
+        private int elementSize;
 
-		private Param (String mnemonic, int arrayElementSize) {
-			this.mnemonic = mnemonic;
-			this.elementSize = arrayElementSize;
-		}
+        private Param(String mnemonic, int arrayElementSize) {
+            this.mnemonic = mnemonic;
+            this.elementSize = arrayElementSize;
+        }
 
-		@Override
-		public String mnemonic () {
-			return this.mnemonic;
-		}
+        @Override
+        public String mnemonic() {
+            return this.mnemonic;
+        }
 
-		@Override
-		public int arrayElementSize () {
-			return this.elementSize;
-		}
-	}
+        @Override
+        public int arrayElementSize() {
+            return this.elementSize;
+        }
+    }
 
-	public LevelsFilter () {
-		super(ShaderLoader.fromFile("screenspace", "levels"));
-		rebind();
-	}
+    public LevelsFilter() {
+        super(ShaderLoader.fromFile("screenspace", "levels"));
+        rebind();
+    }
 
-	/** Set the contrast
-	 * @param contrast The contrast value in [0..2] */
-	public void setContrast (float contrast) {
-		this.contrast = contrast;
-		setParam(Param.Contrast, this.contrast);
-	}
+    /** 
+     * Sets the contrast level
+     * @param contrast The contrast value in [0..2] 
+     */
+    public void setContrast(float contrast) {
+        this.contrast = contrast;
+        setParam(Param.Contrast, this.contrast);
+    }
 
-	/** Set the brightness
-	 * @param brightness The brightness value in [-1..1] */
-	public void setBrightness (float brightness) {
-		this.brightness = brightness;
-		setParam(Param.Brightness, this.brightness);
-	}
+    /** 
+     * Sets the brightness level
+     * @param brightness The brightness value in [-1..1] 
+     */
+    public void setBrightness(float brightness) {
+        this.brightness = brightness;
+        setParam(Param.Brightness, this.brightness);
+    }
 
-	@Override
-	public void rebind () {
-		// reimplement super to batch every parameter
-		setParams(Param.Texture, u_texture0);
-		setParams(Param.Brightness, brightness);
-		setParams(Param.Contrast, contrast);
-		endParams();
-	}
+    /** 
+     * Sets the saturation 
+     * @param saturation The saturation level in [0..2]
+     */
+    public void setSaturation(float saturation) {
+        this.saturation = saturation;
+        setParam(Param.Saturation, this.saturation);
+    }
 
-	@Override
-	protected void onBeforeRender () {
-		inputTexture.bind(u_texture0);
-	}
+    /** 
+     * Sets the hue 
+     * @param hue The hue level in [0..2]
+     */
+    public void setHue(float hue) {
+        this.hue = hue;
+        setParam(Param.Hue, this.hue);
+    }
+
+    @Override
+    public void rebind() {
+        // reimplement super to batch every parameter
+        setParams(Param.Texture, u_texture0);
+        setParams(Param.Brightness, brightness);
+        setParams(Param.Contrast, contrast);
+        setParams(Param.Saturation, saturation);
+        setParams(Param.Hue, hue);
+        endParams();
+    }
+
+    @Override
+    protected void onBeforeRender() {
+        inputTexture.bind(u_texture0);
+    }
 }
