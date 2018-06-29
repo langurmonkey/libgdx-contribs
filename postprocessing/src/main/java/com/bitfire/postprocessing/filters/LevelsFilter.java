@@ -91,6 +91,10 @@ public final class LevelsFilter extends Filter<LevelsFilter> {
         setParam(Param.Hue, this.hue);
     }
 
+    /**
+     * Sets the gamma correction value
+     * @param gamma Gamma value in [0..3]
+     */
     public void setGamma(float gamma) {
         this.gamma = gamma;
         setParam(Param.Gamma, this.gamma);
