@@ -18,7 +18,6 @@ package com.bitfire.postprocessing.utils;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.Mesh.VertexDataType;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -69,7 +68,7 @@ public class FullscreenQuad {
 		verts[U4] = 0f;
 		verts[V4] = 1f;
 
-		Mesh tmpMesh = new Mesh(VertexDataType.VertexArray, true, 4, 0, new VertexAttribute(Usage.Position, 2, "a_position"),
+        Mesh tmpMesh = new Mesh(true, 4, 0, new VertexAttribute(Usage.Position, 2, "a_position"),
 			new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoord0"));
 
 		tmpMesh.setVertices(verts);

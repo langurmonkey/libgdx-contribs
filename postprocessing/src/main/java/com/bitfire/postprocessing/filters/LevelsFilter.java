@@ -24,10 +24,11 @@ public final class LevelsFilter extends Filter<LevelsFilter> {
     private float contrast = 1.0f;
     private float saturation = 1.0f;
     private float hue = 1.0f;
+    private float gamma = 1.0f;
 
     public enum Param implements Parameter {
         // @formatter:off
-        Texture("u_texture0", 0), Brightness("u_brightness", 0), Contrast("u_contrast", 0), Saturation("u_saturation", 0), Hue("u_hue", 0);
+        Texture("u_texture0", 0), Brightness("u_brightness", 0), Contrast("u_contrast", 0), Saturation("u_saturation", 0), Hue("u_hue", 0), Gamma("u_gamma", 0);
         // @formatter:on
 
         private String mnemonic;
@@ -90,6 +91,11 @@ public final class LevelsFilter extends Filter<LevelsFilter> {
         setParam(Param.Hue, this.hue);
     }
 
+    public void setGamma(float gamma) {
+        this.gamma = gamma;
+        setParam(Param.Gamma, this.gamma);
+    }
+
     @Override
     public void rebind() {
         // reimplement super to batch every parameter
@@ -98,6 +104,7 @@ public final class LevelsFilter extends Filter<LevelsFilter> {
         setParams(Param.Contrast, contrast);
         setParams(Param.Saturation, saturation);
         setParams(Param.Hue, hue);
+        setParams(Param.Gamma, gamma);
         endParams();
     }
 

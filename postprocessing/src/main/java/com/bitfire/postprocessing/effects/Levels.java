@@ -54,6 +54,14 @@ public final class Levels extends PostProcessorEffect {
         filter.setContrast(value);
     }
 
+    /** 
+     * Sets the gamma correction value
+     * @param value The gamma value in [0.1..3]
+     */
+    public void setGamma(float value) {
+        filter.setGamma(value);
+    }
+
     @Override
     public void dispose() {
         if (filter != null) {
